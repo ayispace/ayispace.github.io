@@ -1,0 +1,268 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>计算机系统漫游(CSAPP_chapter1) | 阿一的博客</title><meta name="author" content="阿一"><meta name="copyright" content="阿一"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="《Computer System: A Programmer’s Perspective》        “CS: APP”，中文名：《深入理解计算机系统》。第一次听说这本书的的时候，看见“系统”二字，我下意识的以为这是本讲操作系统的书籍。当然这种想法是不对的，事实上这本书是一个关于计算机科学的“大杂烩”，内容主要包括信息的表示和处理、程序的机器级表示、处理器体系结构、优化程序性能、存储器层次结构">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机系统漫游(CSAPP_chapter1)">
+<meta property="og:url" content="http://ayispace.github.io/2021/12/13/CSAPP-chapter1/index.html">
+<meta property="og:site_name" content="阿一的博客">
+<meta property="og:description" content="《Computer System: A Programmer’s Perspective》        “CS: APP”，中文名：《深入理解计算机系统》。第一次听说这本书的的时候，看见“系统”二字，我下意识的以为这是本讲操作系统的书籍。当然这种想法是不对的，事实上这本书是一个关于计算机科学的“大杂烩”，内容主要包括信息的表示和处理、程序的机器级表示、处理器体系结构、优化程序性能、存储器层次结构">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://ayispace.github.io/img/page_back.jpg">
+<meta property="article:published_time" content="2021-12-13T08:02:33.000Z">
+<meta property="article:modified_time" content="2021-12-14T15:34:03.360Z">
+<meta property="article:author" content="阿一">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://ayispace.github.io/img/page_back.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://ayispace.github.io/2021/12/13/CSAPP-chapter1/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '计算机系统漫游(CSAPP_chapter1)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-12-14 23:34:03'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/picture.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/talk/"><i class="fa-fw fas fa-images"></i><span> 碎碎念</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About me</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/page_back.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">阿一的博客</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/talk/"><i class="fa-fw fas fa-images"></i><span> 碎碎念</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About me</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">计算机系统漫游(CSAPP_chapter1)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-12-13T08:02:33.000Z" title="发表于 2021-12-13 16:02:33">2021-12-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-12-14T15:34:03.360Z" title="更新于 2021-12-14 23:34:03">2021-12-14</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="计算机系统漫游(CSAPP_chapter1)"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="《Computer-System-A-Programmer’s-Perspective》"><a href="#《Computer-System-A-Programmer’s-Perspective》" class="headerlink" title="《Computer System: A Programmer’s Perspective》"></a>《Computer System: A Programmer’s Perspective》</h2><p>        “CS: APP”，中文名：《深入理解计算机系统》。第一次听说这本书的的时候，看见“系统”二字，我下意识的以为这是本讲操作系统的书籍。当然这种想法是不对的，事实上这本书是一个关于计算机科学的“大杂烩”，内容主要包括信息的表示和处理、程序的机器级表示、处理器体系结构、优化程序性能、存储器层次结构、链接、异常控制流、虚拟存储器、系统级I/O、网络编程、并发编程等。这本书的目的也并不是想教人们实现计算机的某个部件或软件，而是以一个程序员的角度，告诉阅读者如何利用计算机系统的知识写出更好的程序。</p>
+<h2 id="计算机系统漫游"><a href="#计算机系统漫游" class="headerlink" title="计算机系统漫游"></a>计算机系统漫游</h2><p>        通过本章的学习，我们将初步了解计算机系统工作的流程。</p>
+<h4 id="1-关于编译系统"><a href="#1-关于编译系统" class="headerlink" title="1.关于编译系统"></a>1.关于编译系统</h4><p>        在Linux系统上，我们通常通过gcc  -o  命令来让编译器工作，然而这一条小小的命令，其背后的工作却十分复杂。主要分为以下四个部分。</p>
+<ul>
+<li><strong>预处理阶段</strong></li>
+</ul>
+<p>        相信写过C语言的同学对头文件都不会陌生，例如 <strong>“#include&lt; stdio.h &gt;”<strong>，对这样的头文件的处理，就是预处理工作的一部分。事实上，在预处理阶段， <strong>预处理器(cpp)</strong> 会根据以 # 开头的代码，来修改原始程序。对于上面的头文件，预处理器会自动读入该头文件的内容，并将其中的内容插入到源程序中。只有头文件的内容被放进源程序之后，源程序才可以调用头文件内的库函数。</strong>假设我们有一个C语言源程序hello.c，当预处理的过程结束之后，hello.c 文件会变成 hello.i 文件，这样，预处理就完成了。</strong></p>
+<ul>
+<li><strong>编译阶段</strong></li>
+</ul>
+<p>        经过预处理，生成了一个 hello.i 文件，但这个时候这个程序还并不能直接运行，<strong>编译器(ccl)</strong> 将文本文件 hello.i 翻译成文本文件 hello.s ，编译的工作十分复杂精细，其中包含词法分析、语法分析、语义分析、中间代码生成以及优化等等一系列的中间操作。这个过程结束之后，我们就得到了一个 hello.s 的文件，这是个汇编文件。</p>
+<ul>
+<li><strong>汇编阶段</strong></li>
+</ul>
+<p>        在这一阶段，<strong>汇编器(as)</strong> 会根据指令集将汇编程序 hello.s 翻译成机器指令，机器指令就是二进制文件了，这个时候的程序已经足够的 “底层” 了。之后汇编器会把这一系列的机器指令按照固定的规则进行打包，得到  <strong>可重定位目标文件(relocatable object program)</strong> hello.o 。虽然此时 hello.o 已经是一个二进制的文件了，但是还不能直接执行，还要经历最后一个阶段：链接。</p>
+<ul>
+<li><strong>链接阶段</strong></li>
+</ul>
+<p>        我们上文中说到，只有引入了头文件，才能使用该头文件内的库函数。例如当我们调用printf函数时，它实际上存储在名为 printf.o 的文件中。<strong>链接器 (ld）</strong> 就负责把 hello.o 和 printf.o 按照一定规则进行合并。也正是因为链接器要对 hello.o 和 printf.o 的进行调整，所以 hello.o 才会被称之为可重定位目标文件。最终经过链接阶段可以得到<strong>可执行目标文件</strong>hello。</p>
+<p>        </p>
+<p>        （编译流程图）</p>
+<p><em><strong>我们为什么要去了解编译器的工作原理呢？</strong></em></p>
+<p>        相信很多朋友都有这样的疑惑，现代编译器技术已经足够的成熟，我们也只需要一行命令或者在IDE上点击一下编译按钮，我们就能得到一个可执行文件了。虽然我们不需要对编译器的细节有十分细致的掌握，但我们还是需要对机器执行的代码有一个基本的了解，这样我们就知道编译器把不同的 C 代码转换成的机器代码是什么。于是我们才能知道，为什么switch往往比多层if else的效率高？(if else执行时候是顺序执行的，会一层一层遍历，对于switch语句，编译器会建立一个map，根据传入的值直接定位相关语句。所以switch相当于时间换空间)。</p>
+<p>        而在大型项目的开发过程中，由于涉及到大量各种各样函数库的调用，根据以往的经验，一些奇奇怪怪的错误往往都是与链接器有关的。例如静态变量和全局变量的区别是什么？静态库和动态库的区别是什么？一些链接错误甚至在程序运行的时候才会出现。搞不清楚这些问题，工作中就会出错。</p>
+<p>        除此之外，为了避免缓冲区溢出（buffer overflow）的问题。我们第一步就是要理解数据和控制信息在程序栈上是如何存储的，了解不严谨不规范的书写方式会引起什么样的后果。</p>
+<p>        所以毫无疑问，了解编译器的基本原理是很重要的。<strong>可以帮助我们优化程序性能，理解链接时出现的错误，以及避免一些安全漏洞。</strong></p>
+<h4 id="2-系统的硬件组成"><a href="#2-系统的硬件组成" class="headerlink" title="2.系统的硬件组成"></a>2.系统的硬件组成</h4><p>        编译系统将程序文件处理成二进制文件(机器码)，接下来就要让计算机来执行这个文件了，那么计算机执行程序文件的过程中发生了什么呢？想要了解这个，我们得先了解一下计算机的硬件组织。硬件组成主要有以下四部分：</p>
+<ul>
+<li><strong>总线</strong></li>
+</ul>
+<p>        <strong>总线是贯穿整个系统的一组子管道。它携带信息并负责咋各个部件间传递，包括内存和处理器之间的信息传递。</strong> 通常总线被设计成传送固定长度的字节块，也就是字（word），至于这个字到底是多少个字节，各个系统中是不一样的，<strong>32 位的机器，一个字长是 4 个字节；而 64 位的机器，一个字长是 8 个字节。</strong></p>
+<ul>
+<li><strong>I/O设备</strong></li>
+</ul>
+<p>        I/O设备，即输入输出设备。相较于总线这种内部设备，输入输出设备我们就很熟悉了。比较典型的输入设备有：键盘、鼠标等；典型的输出设备有：显示器、音响等；I/O设备是系统与外部世界的联系通道。<strong>每个I/O设备都通过一个控制器或适配器与I/O总线相连。</strong> 控制器和适配器之间的区别主要在于它们的封装方式。别主要在于它们的封装方式。<strong>控制器是I/O设备本身或者系统的主印制电路板(通常称作主板)上的芯片组。而适配器则是一块插在主板插槽上的卡。无论如何，它们的功能都是在I/O总线和I/O设备之间传递信息。</strong></p>
+<ul>
+<li><strong>主存</strong></li>
+</ul>
+<p>        主存是一个<strong>临时存储设备，在处理器执行程序时，用来存放程序和程序处理的数据。</strong> 从<br>物理上来说，主存是由一组 <strong>动态随机存取存储器(DRAM)</strong> 芯片组成的。从逻辑上来说，存储<br>器是一个 <strong>线性的字节数组，每个字节都有其唯一的地址(数组索引)，这些地址是从零开始<br>的。</strong> 一般来说，组成程序的每条机器指令都由不同数量的字节构成。与C程序变量相对应的<br>数据项的大小是根据类型变化的。比如，在运行Linux的x86-64机器上，short类型的数据<br>需要2个字节，int 和float类型需要4个字节，而long和double类型需要8个字节。</p>
+<p>        需要注意的是，我们常常也把<strong>主存</strong>称之为<strong>内存</strong>，但是这个要区别于手机厂商发明的 ”运行内存“ 和 ”存储内存“ 的概念，计算机专业是没有这两个概念的，所谓 ”运行内存“ 就是我们常说的内存，而 ”存储内存“ 其实就是磁盘容量。</p>
+<ul>
+<li><strong>处理器</strong></li>
+</ul>
+<p>        处理器，其实是 <strong>中央处理单元(CPU)</strong> 的简称，是解释(或执行)存储在主存中指令的引擎。处理器的核心是一个 **大小为一个字的存储设备(或寄存器)，称为程序计数器(PC)**。在任何时刻，PC 都指向主存中的某条机器语言指令(即含有该条指令的地址)。从系统通电开始，直到系统断电，处理器一直在不断地执行程序计数器指向的指令，然后再更新程序计数器，使其指向下一条指令(值得注意的是，下一条指令并不一定和在内存中刚刚执行的指令相邻)。处理器按照一个非常简单的指令执行模型来操作，这个模型是由 <strong>指令集架构</strong> 决定的。</p>
+<p>        除了 PC ，CPU中还有 <strong>寄存器(register)</strong> 和 <strong>算术逻辑单元(ALU)</strong> 两个核心部件。CPU的工作需要三者配合，一个常见的处理过程是这样的。</p>
+<blockquote>
+<p><strong>1.加载：从主存复制一个字节或者一个字到寄存器，以覆盖寄存器原来的内容，作为接下来的操作数据。</strong></p>
+<p><strong>2.操作：把两个寄存器的内容复制到ALU，ALU对这两个字做算术运算，并将结果存放到一个寄存器中，以覆盖该寄存器中原来的内容。</strong></p>
+<p><strong>3.存储：从寄存器复制一个字节或者一个字到主存的某个位置，以覆盖这个位置上原本的数据</strong></p>
+<p><strong>4.跳转：从指令本身中抽取一个字，并将这个字复制到程序计数器(PC)中，以覆盖PC中原来的值。</strong></p>
+</blockquote>
+<p>        <img src="/2021/12/13/CSAPP-chapter1/hardware.png" class="" title="hardware"></p>
+<p>                                        (计算机系统硬件组成图)</p>
+<h4 id="3-重要的高速缓存"><a href="#3-重要的高速缓存" class="headerlink" title="3.重要的高速缓存"></a>3.重要的高速缓存</h4><p>        假设我们执行一个 ”hello, world\n“ 的C语言程序，hello程序中的代码和数据会从磁盘复制到主存。数据包括最终会被输出的字符串“hello, world”。利用直接存储器存取(DMA)技术，数据可以不通过处理器而直接从磁盘到达主存。一旦目标文件hello中的代码和数据被加载到主存，处理器就开始执行hello程序的main程序中的机器语言指令。这些指令将“hello, world\n”字符串中的字节从主存复制到寄存器文件，再从寄存器文件中复制到显示设备，最终显示在屏幕上。很明显这个过程存在着一定的问题，即系统花费了大量的时间把信息从一个地方挪到另一个地方。hello程序的机器指令最初是存放在磁盘上，当程序加载时，它们被复制到主存;当处理器运行程序时，指令又从主存复制到处理器。同样，对于字符串”hello, world\n“也是如此的过程。这样的过程显然减慢了系统的运行时间。</p>
+<p>        根据机械原理，较大的存储设备要比较小的存储设备运行得慢，而快速设备的造价远高<br>于同类的低速设备。比如说，一个典型系统上的磁盘驱动器可能比主存大1000倍，但是对处理器而言，从磁盘驱动器上读取一个字的时间开销要比从主存中读取的开销大1000万倍。</p>
+<p>        所以说，设计一个计算机系统时，往往就是在做成本与性能的权衡，既要设计的达到不错的性能，还要降低造价，在这样的博弈下，系统设计者采用了一个较快较小的存储设备作为暂时的集结区域，通常称之为 <strong>高速缓存存储器(cache memory)，</strong> 这块区域通常用来存放处理器近期需要用到的信息。</p>
+<p>        <img src="/2021/12/13/CSAPP-chapter1/cache.png" class="" title="cache"></p>
+<p>        cache memory的思想就是在处理器和较大较慢的设备中间插入一个较小较快的设备，从而提升存取的效率，而这种思想在计算机系统的设计上已经成为一种普遍的观念了。几乎每个计算机系统中的存储设备都被设计成一个<strong>存储器层次结构</strong>：</p>
+<p>        <img src="/2021/12/13/CSAPP-chapter1/memory.png" class="" title="memory"></p>
+<p>        整体结构由上至下，速度逐渐变慢，容量逐渐变大，造价逐渐降低。</p>
+<h4 id="4-操作系统来管理硬件"><a href="#4-操作系统来管理硬件" class="headerlink" title="4.操作系统来管理硬件"></a>4.操作系统来管理硬件</h4><p>        要知道，无论是hello程序，还是别的应用程序，它们在运行时候，都不直接调用硬件资源。为啥不让他们直接用呢？原因很简单，大家都想自己先用，就会一团糟。。。因为硬件设备就那么几块。所以我们把硬件交给硬件，哪个程序想用就跟操作系统申请一下，然后操作系统根据规则来分配资源。这样就有效避免了硬件资源被滥用，也提供了一套清晰的规则控制杂乱的底层硬件。</p>
+<p>        为了实现上述功能，操作系统引入了一些抽象的概念。例如：文件是对 I/O 设备的抽象；虚拟内存是对内存和磁盘 I/O 的抽象；进程是对处理器、内存以及 I/O 设备的抽象。</p>
+<ul>
+<li><strong>进程</strong></li>
+</ul>
+<p>        进程是计算机系统中极其重要的概念之一，进程这一概念，帮助操作系统提供一种假象给程序，就好像系统上只有这个程序在运行。程序看上去是独占地使用理器、主存和I/O设备。处理器看上去就像在不间断地一条接一条地执行程序中的指令，即该程序的代码和数据是系统内存中唯一的对象。进程是操作系统对一个正在运行的程序的一种抽象。在一个系统上可以同时运行多个进程，而每个进程都好像在独占地使用硬件。而并发运行是说一个进程的指令和另一个进程的指令是交错执行的。在大多数系统中，需要运行的进程数是多于可以运行它们的  CPU个数的。传统系统在一个时刻只能执行一个程序，而先进的多核处理器同时能够执行多个程序。无论是在单核还是多核系统中，一个CPU看上去都像是在并发地执行多个进程，这是通过处理器在进程间切换来实现的。操作系统实现这种交错执行的机制称为上下文切换。</p>
+<ul>
+<li><strong>虚拟内存</strong></li>
+</ul>
+<p>        操作系统也为每个进程提供了一个假象，就是每个进程都在独自占用整个内存空间，<br>每个进程看到的内存都是一样的，我们称之为虚拟地址空间。</p>
+<ul>
+<li><strong>文件</strong></li>
+</ul>
+<p>        对于Linux系统来说，有一个看似很”极端“的思想，即：<strong>万物皆文件。</strong></p>
+<p>        所有的  IO  设备，包括键盘，磁盘，显示器，甚至网络，这些都可以看成文件，系统中所有的输入和输出都可以通过读写文件来完成。文件这个简单而精致的概念是非常强大的，因为它向应用程序提供了一个统一的视图，来看待系统中可能含有的所有各式各样的I/O设备。例如，处理磁盘文件内容的应用程序员可以非常幸福，因为他们无须了解具体的磁盘技术。进一步说，同一个程序可以在使用不同磁盘技术的不同系统上运行。</p>
+<h4 id="5-系统间的网络通信"><a href="#5-系统间的网络通信" class="headerlink" title="5.系统间的网络通信"></a>5.系统间的网络通信</h4></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">阿一</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://ayispace.github.io/2021/12/13/CSAPP-chapter1/">http://ayispace.github.io/2021/12/13/CSAPP-chapter1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://ayispace.github.io" target="_blank">阿一的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="/img/page_back.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/10/18/Deep-Learning/"><img class="next-cover" src="/img/Lee_note_img/Lee.PNG" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">《机器学习》——李宏毅 学习笔记（四）</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/picture.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">阿一</div><div class="author-info__description">鹏北海，凤朝阳，又携书剑路茫茫</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/ayispace"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/ayispace" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:zhenyi01@foxmail.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">这里是阿一，这里将会主要更新有关    深度学习    自然语言处理    数据结构与算法   等方面的内容。当然不会只有这些。喜欢的话可以关注一下哦。互挂友链请邮箱联系。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E3%80%8AComputer-System-A-Programmer%E2%80%99s-Perspective%E3%80%8B"><span class="toc-number">1.</span> <span class="toc-text">《Computer System: A Programmer’s Perspective》</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%BC%AB%E6%B8%B8"><span class="toc-number">2.</span> <span class="toc-text">计算机系统漫游</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%85%B3%E4%BA%8E%E7%BC%96%E8%AF%91%E7%B3%BB%E7%BB%9F"><span class="toc-number">2.0.1.</span> <span class="toc-text">1.关于编译系统</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-%E7%B3%BB%E7%BB%9F%E7%9A%84%E7%A1%AC%E4%BB%B6%E7%BB%84%E6%88%90"><span class="toc-number">2.0.2.</span> <span class="toc-text">2.系统的硬件组成</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-%E9%87%8D%E8%A6%81%E7%9A%84%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98"><span class="toc-number">2.0.3.</span> <span class="toc-text">3.重要的高速缓存</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E6%9D%A5%E7%AE%A1%E7%90%86%E7%A1%AC%E4%BB%B6"><span class="toc-number">2.0.4.</span> <span class="toc-text">4.操作系统来管理硬件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-%E7%B3%BB%E7%BB%9F%E9%97%B4%E7%9A%84%E7%BD%91%E7%BB%9C%E9%80%9A%E4%BF%A1"><span class="toc-number">2.0.5.</span> <span class="toc-text">5.系统间的网络通信</span></a></li></ol></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background: #AF601A"><div id="footer-wrap"><div class="copyright">&copy;2021 By 阿一</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function loadValine () {
+  function initValine () {
+    const valine = new Valine(Object.assign({
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+      requiredFields: ["nick,mail"],
+      visitor: false
+    }, null))
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js').then(initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.getElementById('vcomment'),loadValine)
+  else setTimeout(loadValine, 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
